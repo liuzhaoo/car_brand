@@ -9,5 +9,7 @@ make_lmdb.sh : 创建lmdb
 lmdb_keys.py ： 遍历lmdb 取出所有的keys和label
 split_lmdbkeys.py : 拆分数据 分出训练集和测试集
 
+make_youzhan_val.py: 将油站测试集的标签改为新的子标签，并保存为txt文件
+
 
 

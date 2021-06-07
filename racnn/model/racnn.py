@@ -4,7 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 from .resnet import resnet18
-device = torch.device(f'cuda:4')
+device = torch.device(f'cuda:1')
+# device = torch.device(f'cuda:4')
 class AttentionCropFunction(torch.autograd.Function):
     @staticmethod
     def forward(self, images, locs):
@@ -19,7 +20,7 @@ class AttentionCropFunction(torch.autograd.Function):
         in_size = images.size()[2]
         ret = []
         for i in range(images.size(0)):
-            tx, ty, tl = locs[i][0], locs[i][1], locs[i][2]
+            tx, ty, tl = locs[i][0], locs[i][1], locs[i][2]/2
             tl = tl if tl > (in_size/3) else in_size/3
             tx = tx if tx > tl else tl
             tx = tx if tx < in_size-tl else in_size-tl
@@ -72,7 +73,6 @@ class AttentionCropFunction(torch.autograd.Function):
         ret[:, 2] = (norm * ml_batch).sum(dim=1).sum(dim=1)
         return None, ret
 
-
 class AttentionCropLayer(nn.Module):
     """
         Crop function sholud be implemented with the nn.Function.
@@ -102,9 +102,9 @@ class RACNN(nn.Module):
             nn.Sigmoid(),
         )
 
-        self.echo = None
+        
     def forward(self,x):
-        batch_size = x.shape[0]
+        # batch_size = x.shape[0]
         # rescale_tl = torch.tensor([1, 1, 0.5], requires_grad=False)
         # forward @scale-1
         feature_s1 = self.b1(x)  # torch.Size([1, 512, 8, 8])          # resnet的输出

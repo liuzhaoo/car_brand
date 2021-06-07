@@ -45,8 +45,8 @@ def split(label_dict,train_npy,train_labels_npy,test_npy,test_labels_npy,ratio):
         train_label_num.extend(train_num)
         test_label_num.extend(test_num)
 
-        train_set.extend(test_p_b)
-        test_set.extend(train_p_b)
+        train_set.extend(train_p_b)
+        test_set.extend(test_p_b)
     # train_set = 
     np.save(train_npy,train_set)
     np.save(test_npy,test_set)

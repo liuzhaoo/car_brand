@@ -11,8 +11,8 @@ def save_img(x, path, annotation=''):
     plt.savefig(path, dpi=300, pad_inches=0)    # visualize masked image
 
 def tensor_to_img(x, imtype=np.uint8):
-	mean = [109.97 / 255., 127.34 / 255., 123.88 / 255.]
-	std = [1. / 255., 1. / 255., 1. / 255.]
+	mean = [128.97 / 255., 128.34 / 255., 128.88 / 255.]
+	std = [100. / 255., 100. / 255., 100. / 255.]
 
 	if not isinstance(x, np.ndarray):
 		if isinstance(x, torch.Tensor):  # get the data from a variable

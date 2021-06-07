@@ -152,7 +152,7 @@ def get_train_utils(opt, model_parameters):
     transform.append(RandomCrop(opt.size))
     transform.append(resize)
     
-    # transform.append(RandomRotation(45))
+    transform.append(RandomRotation(45))
     transform.append(ToTensor())
     transform.append(normalize)
     
@@ -160,21 +160,6 @@ def get_train_utils(opt, model_parameters):
     transform = Compose(transform)
 
     training_data = LmdbDataset_train(opt.train_data,transform,opt.keys_path_train)
-
-    # print('均衡化。。。')
-
-    # # weights = make_weights_for_balanced_classes('/mnt/disk/zhaoliu_data/carlogo/train_data/carlogo_train.txt', 27249)
-
-    # weights = make_weights_for_balanced_classes(opt.train_txt, 27249)
-    # np.save('/home/zhaoliu/car_weight/car_full/dataset/weights.npy',weights)
-
-    # weights = torch.DoubleTensor(weights)
-    # print(len(training_data))
-    # print(len(weights))
-    # assert len(training_data) == len(weights)
-    # train_sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
-    # print('均衡化完成')
-
 
     if opt.distributed:
         train_sampler = torch.utils.data.distributed.DistributedSampler(

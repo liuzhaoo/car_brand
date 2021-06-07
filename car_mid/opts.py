@@ -16,8 +16,8 @@ def parse_opts():
                         type=str,
                         help='path of train data weight')
 
-    parser.add_argument('--train_txt',
-                        default='/home/zhaoliu/car_brand/datasets/train.txt',
+    parser.add_argument('--label_npy',
+                        default='/home/zhaoliu/car_brand/datasets_new/tongji/train_tongji.npy',
                         type=str,
                         help='path of train data')
     parser.add_argument('--val_txt',
@@ -26,7 +26,7 @@ def parse_opts():
                         help='path of val data')
 
     parser.add_argument('--train_data',
-                        default="/mnt/disk/zhaoliu_data/small_car_lmdb/train_val_lmdb/",
+                        default="/mnt/disk/zhaoliu_data/small_car_lmdb/train_val_lmdb",
                         type=str,
                         help='path of train data')
     parser.add_argument('--keys_path_train',
@@ -34,7 +34,7 @@ def parse_opts():
                         type=str,
                         help='path of train data')
     parser.add_argument('--val_data',
-                        default="/mnt/disk/zhaoliu_data/small_car_lmdb/train_val_lmdb/",
+                        default="/mnt/disk/zhaoliu_data/small_car_lmdb/train_val_lmdb",
                         type=str,
                         help='path of val data')
     parser.add_argument('--keys_path_val',
@@ -43,7 +43,7 @@ def parse_opts():
                         help='path of val data')
 
     parser.add_argument('--result_path',
-                        default='/home/zhaoliu/car_brand/car_mid/results_newdata/random_sample',
+                        default='/home/zhaoliu/car_brand/car_mid/results_newdata/rotation',
                         type=Path,
                         help='Result directory path')
     

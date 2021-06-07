@@ -25,7 +25,7 @@ from train_apn import apn_train_epoch
 from train_cls import cls_train_epoch
 from validation import val_epoch
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 def json_serial(obj):
     if isinstance(obj, Path):
         return str(obj)
@@ -49,6 +49,7 @@ def get_opt():
     opt = parse_opts()
     opt.begin_epoch = 1
     opt.n_input_channels = 3
+    opt.
 
     print(opt)
     with (opt.result_path / 'opts.json').open('w') as opt_file:
@@ -131,17 +132,14 @@ def get_weak_loc(features):
 
 
 def pretrainAPN(trainloader,optimizer_apn,opt,model,tb_writer):
-
-    device = opt.device
-    for epoch in range(1):
+    for epoch in range(2):
         for step, (inputs, _) in enumerate(trainloader, 0):
             t0 = time.time()
-            inputs = Variable(inputs).to(device)
-            model = model.to(device)
+            inputs = Variable(inputs).to(opt.device)
             _, features, attens, _ = model(inputs)
             weak_loc = get_weak_loc(features)
             optimizer_apn.zero_grad()
-            loss = F.smooth_l1_loss(attens[0], weak_loc[0].to(device))
+            loss = F.smooth_l1_loss(attens[0], weak_loc[0].to(opt.device))
 
 
             loss.backward()
@@ -164,7 +162,7 @@ def main_worker(opt):
     # opt.device = torch.device('cuda')
 
     model = RACNN(num_classes=opt.num_classes)
-    model = model.to(opt.device)
+    model.to(opt.device)
     # model = torch.nn.DataParallel(model,device_ids=[0,1])
     print(model)
     cls_params = list(model.b1.parameters()) + list(model.b2.parameters()) + list(model.classifier1.parameters()) + list(model.classifier2.parameters())
@@ -179,8 +177,7 @@ def main_worker(opt):
     test_sample, _ = next(iter(val_loader))
 
     tb_writer = SummaryWriter(log_dir=opt.result_path)
-    pretrainAPN(train_loader,optimizer_apn,opt,model,tb_writer)
-    # model = model.to(opt.device)
+    # pretrainAPN(train_loader,optimizer_apn,opt,model,tb_writer)
     for i in range(opt.begin_epoch, opt.n_epochs + 1):
    
         cls_train_epoch(i, train_loader, model, criterion, optimizer_cls,
@@ -217,7 +214,7 @@ def main_worker(opt):
 if __name__ == '__main__':
     opt = get_opt()
 
-    opt.device = torch.device(f'cuda:1')
+    opt.device = torch.device(f'cuda:3')
     # opt.device = torch.device('cuda')
     cudnn.benchmark = True
     main_worker(opt)

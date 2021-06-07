@@ -89,7 +89,8 @@ def cls_train_epoch(epoch,
 									   loss2=losses2,
 									   acc1=accuracies1,
 									   acc2=accuracies2))
-
+		# if i >10:
+		
 
 	if epoch_logger is not None:
 		epoch_logger.log({

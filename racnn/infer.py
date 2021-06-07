@@ -11,11 +11,10 @@ from torch.utils.data.dataloader import DataLoader
 from torchvision.transforms import Compose, ToTensor, Resize, Normalize,ToPILImage
 from pathlib import Path
 
-from model.inceptionv4 import Inceptionv4  
-from model.resnet import resnet34
-from utils import get_mean_std,Logger, worker_init_fn, get_lr,AverageMeter, calculate_accuracy,calculate_union_accuracy,find_badcase
+from model.racnn import RACNN
+from utils import AverageMeter, calculate_accuracy
 # from utils import AverageMeter, calculate_accuracy
-from dataset.val_dataloader import LmdbDataset_val
+from dataloader import LmdbDataset
 from torch.utils.data._utils.collate import default_collate  # 注意版本
 
 
@@ -110,21 +109,20 @@ def cal_ori_acc(outputs, targets):
 
 def get_test_utils(test_path,keys_path):
     
-    transform = []
-    # normalize = get_normalize_method(opt.mean, opt.std, opt.no_mean_norm,
-    #                                  opt.no_std_norm)
-    normalize = Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+    # transform = []
+    # # normalize = get_normalize_method(opt.mean, opt.std, opt.no_mean_norm,
+    # #                                  opt.no_std_norm)
+    # normalize = Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
     
-    resize = Resize(240)
-    # transform.append(ToPILImage())
-    transform.append(resize)
+    # resize = Resize(240)
+    # # transform.append(ToPILImage())
+    # transform.append(resize)
 
-    transform.append(ToTensor())
-    transform.append(normalize)
-    transform = Compose(transform)
+    # transform.append(ToTensor())
+    # transform.append(normalize)
+    # transform = Compose(transform)
     
-    test_data = LmdbDataset_val(test_path,transform,keys_path)
-    print(len(test_data))
+    test_data = LmdbDataset(test_path,keys_path,'test')
 
 
     test_loader = torch.utils.data.DataLoader(test_data,
@@ -162,7 +160,8 @@ def test(model,test_loader):
 
             # chexing = torch.tensor(targets)
 
-            outputs= model(inputs)
+            outputs, _, _, _ = model(inputs)
+            outputs = outputs[0]
 
 
             acc = calculate_accuracy(outputs, targets)
@@ -207,16 +206,16 @@ def resume_model(pth_path, model):
 
 def main():
 
-    pth_path = '/home/zhaoliu/car_brand/car_mid/results_perspective/per_1/save_50.pth'
+    pth_path = '/home/zhaoliu/car_brand/racnn/results2/save_20.pth'
     
     # test_result=Path('/home/zhaoliu/car_class+ori/test_result')
     # test_path = '/home/zhaoliu/car_data/训练数据/4.9新加测试集/val_lmdb'
     # keys_path = '/home/zhaoliu/car_data/训练数据/4.9新加测试集/new_val.npy'
-    test_path = "/mnt/disk/zhaoliu_data/perspective/lmdb/test"
-    keys_path = '/home/zhaoliu/car_brand/perspective_data/prespective_test.npy'
+    test_path = "/mnt/disk/zhaoliu_data/small_car_lmdb/youzhan_test"
+    keys_path = '/home/zhaoliu/car_brand/lmdb_data_new/youzhan_test/youzhan_test.npy'
 
 
-    model = resnet34(num_classes=1189)
+    model = RACNN(num_classes=1189)
     model = resume_model(pth_path,model)
     test_loader = get_test_utils(test_path,keys_path)
     print('数据加载完毕...')

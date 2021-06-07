@@ -10,13 +10,13 @@ from torchvision.transforms import Compose, ToTensor, Resize, Normalize,ToPILIma
 from pathlib import Path
 from dataset.infer_dataloader import LmdbDataset_val
 # from dataset.maps import get_maps
-from model.resnet import resnet18
+from model.resnet import resnet18,resnet34
 from torch.utils.data._utils.collate import default_collate  # 注意版本
 
 
 
 cls_list = {}
-mid_2_label ='/home/zhaoliu/car_brand/datasets/maps/mid_2_label'
+mid_2_label ='/home/zhaoliu/car_brand/datasets_new/maps/mid_2_label'
 
 for line in open(mid_2_label,'r'):
     mid,label = line.strip().split()
@@ -144,7 +144,7 @@ def test(model,data_loader,midnpy_path,midtxt_path):
                 gt_cls.append(item_gt)
 
                 key = mid_bad_keys[j].decode()   # 当前batch的
-                item = '{}, pred_mid: {} , label_mid: {} '.format(key,pred_mid,label_mid)
+                item = '{}, pred_mid: {} , label_mid: {} '.format('-'.join(key.split('/')[-3:]),pred_mid_str,label_mid_str)
                 mid_badcase_info.append(item)
             
             print('{}/{}'.format(i,len(data_loader)))
@@ -153,8 +153,8 @@ def test(model,data_loader,midnpy_path,midtxt_path):
             
 
         np.save(midnpy_path,mid_badkeys)
-        np.save('/home/zhaoliu/car_brand/car_mid/badcase/weight_sample_s/pred_mid.npy',pred_cls)
-        np.save('/home/zhaoliu/car_brand/car_mid/badcase/weight_sample_s/gt_mid.npy',gt_cls)
+        np.save('/home/zhaoliu/car_brand/car_mid/badcase_per/pred_mid.npy',pred_cls)
+        np.save('/home/zhaoliu/car_brand/car_mid/badcase_per/gt_mid.npy',gt_cls)
 
 
         with open(midtxt_path,'a') as f1:
@@ -178,17 +178,19 @@ def resume_model(pth_path, model):
 
 def main():
 
-    pth_path = '/home/zhaoliu/car_brand/car_mid/results/weight_sample_s/save_50.pth'
+    pth_path = '/home/zhaoliu/car_brand/car_mid/results_perspective/per_1/save_50.pth'
     
-    test_result='/home/zhaoliu/car_brand/car_mid/badcase/weight_sample_s/'
-    test_path = '/mnt/disk/zhaoliu_data/small_car_lmdb/val_lmdb'
-    keys_path = '/home/zhaoliu/car_brand/lmdb_data/val.npy'
+    test_result='/home/zhaoliu/car_brand/car_mid/badcase_per/'
+
+
+    test_path = '/mnt/disk/zhaoliu_data/perspective/lmdb/test'
+    keys_path = '/home/zhaoliu/car_brand/perspective_data/prespective_test.npy'
 
 
     midnpy_path = test_result + 'mid_badkeys.npy'
     midtxt_path = test_result + 'mid_badcase_info.txt'
 
-    model = resnet18(num_classes=1507)
+    model = resnet34(num_classes=1189)
     model = resume_model(pth_path,model)
     test_loader = get_test_utils(test_path,keys_path)
 

@@ -25,7 +25,7 @@ def parse_opts():
                         help='path of val data')
 
     parser.add_argument('--result_path',
-                        default='/home/zhaoliu/car_brand/racnn/results',
+                        default='/home/zhaoliu/car_brand/racnn/results2',
                         type=Path,
                         help='Result directory path')
     
@@ -65,7 +65,7 @@ def parse_opts():
                         help='Type of LR scheduler (multistep | plateau)')
     parser.add_argument(
                         '--multistep_milestones',
-                        default=[20, 30, 40],
+                        default=[10, 15, 20],
                         type=int,
                         nargs='+',
                         help='Milestones of LR scheduler. See documentation of MultistepLR.')
@@ -86,7 +86,7 @@ def parse_opts():
                         type=int,
                         help='Number of threads for multi-thread loading')
     parser.add_argument('--checkpoint',
-                        default=10,
+                        default=5,
                         type=int,
                         help='Trained model is saved at every this epochs.')
     parser.add_argument('--model',

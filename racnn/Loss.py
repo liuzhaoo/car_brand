@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-device = torch.device(f'cuda:4')
+device = torch.device(f'cuda:1')
 def multitask_loss(preds, labels):
     loss = []
     for i in range(len(preds)):

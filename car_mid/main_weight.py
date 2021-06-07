@@ -28,7 +28,7 @@ from dataset.val_dataloader import LmdbDataset_val
 
 from training import train_epoch
 from validation import val_epoch
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '4'
 def json_serial(obj):
     if isinstance(obj, Path):
         return str(obj)
@@ -74,7 +74,7 @@ def get_opt():
     opt = parse_opts()
     opt.begin_epoch = 1
     opt.n_input_channels = 3
-    opt.result_path = Path('/home/zhaoliu/car_brand/car_mid/results/weight_sample_s')
+    # opt.result_path = Path('/home/zhaoliu/car_brand/car_mid/results/weight_sample_s')
     if opt.distributed:
         opt.dist_rank = 0  # 单个机器
         if opt.dist_rank == 0:
@@ -108,13 +108,14 @@ def make_label_list(txt1,txt2):
         lines = f.readlines()
 
 def make_weights_for_balanced_classes(txt, nclasses):          
-    with open(txt,'r') as f:
-        lines = f.readlines()
-
+    # with open(txt,'r') as f:
+    #     lines = f.readlines()
+    lines = np.load(txt)
     count = [0] * nclasses                                                      
     for item in lines: 
         
-        label = int(item.strip().split('\t')[1])
+        # label = int(item.strip().split('\t')[1])
+        label = int(item)
         count[label] += 1        # 统计每类的数量
                                                         
                
@@ -133,7 +134,8 @@ def make_weights_for_balanced_classes(txt, nclasses):
                                      
     for idx, val in enumerate(lines): 
         
-        label = int(val.strip().split('\t')[1])  
+        # label = int(val.strip().split('\t')[1])  
+        label = int(item)
                                         
         weight[idx] = weight_per_class[label] 
         # if idx % 50000 == 0:
@@ -166,7 +168,7 @@ def get_train_utils(opt, model_parameters):
 
     # # weights = make_weights_for_balanced_classes('/mnt/disk/zhaoliu_data/carlogo/train_data/carlogo_train.txt', 27249)
 
-    weights = make_weights_for_balanced_classes(opt.weight_txt, 1507)
+    weights = make_weights_for_balanced_classes(opt.label_npy, 1189)
     # np.save('/home/zhaoliu/car_weight/car_full/dataset/weights.npy',weights)
 
     weights = torch.DoubleTensor(weights)
@@ -177,12 +179,12 @@ def get_train_utils(opt, model_parameters):
     print('均衡化完成')
 
 
-    if opt.distributed:
-        train_sampler = torch.utils.data.distributed.DistributedSampler(
-            training_data)
+    # if opt.distributed:
+    #     train_sampler = torch.utils.data.distributed.DistributedSampler(
+    #         training_data)
 
-    else:
-        train_sampler = None
+    # else:
+    #     train_sampler = None
     train_loader = torch.utils.data.DataLoader(training_data,
                                                batch_size=opt.batch_size,
                                                shuffle=not train_sampler,

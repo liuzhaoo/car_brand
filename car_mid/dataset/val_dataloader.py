@@ -20,7 +20,6 @@ class LmdbDataset_val(Dataset):
         self.keys = keys.tolist()
         self.length = len(self.keys)
 
-
     def open_lmdb(self):
         self.env = lmdb.open(self.lmdb_path, max_readers=1, readonly=True, lock=False,
                              readahead=False, meminit=False)

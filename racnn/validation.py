@@ -50,7 +50,7 @@ def val_epoch(epoch,
             accuracies_cls.update(acc1, inputs.size(0))
             accuracies_apn.update(acc2, inputs.size(0))
 
-            loss.backward()
+            
 
             batch_time.update(time.time() - end_time)
             end_time = time.time()
@@ -85,7 +85,7 @@ def val_epoch(epoch,
                                         loss2=losses2,
                                         acc1=accuracies_cls,
                                         acc2=accuracies_apn))
-
+         
 
     if epoch_logger is not None:
         epoch_logger.log({

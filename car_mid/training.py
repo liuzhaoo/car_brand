@@ -28,8 +28,6 @@ def train_epoch(epoch,
 
 	batch_time = AverageMeter()
 	data_time = AverageMeter()
-
-
 	losses = AverageMeter()
 	accuracies = AverageMeter()
 	end_time = time.time()

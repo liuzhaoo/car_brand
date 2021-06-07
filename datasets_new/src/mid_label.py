@@ -17,8 +17,8 @@ for line in open(full_label_path,'r'):
     full_str,idx = line.strip().split(' ',1)
     full_2_label[int(idx)] = full_str
 for line in open(mid_2_label_path,'r'):
-	mid_cls, idx = line.strip().rsplit(' ', 1)
-	mid_dict[mid_cls] = int(idx)  # 子品牌-label(9186) 
+    mid_cls, idx = line.strip().rsplit(' ', 1)
+    mid_dict[mid_cls] = int(idx)  # 子品牌-label(9186) 
 
 
 train_all_path = "/mnt/disk/zhaoliu_data/carlogo/train_data/carlogo_train.txt"
